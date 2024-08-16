@@ -1,0 +1,50 @@
+package com.weha.online_book_management_system.controllers;
+
+import com.weha.online_book_management_system.dtos.DataState;
+import com.weha.online_book_management_system.dtos.author.AuthorRequestDTO;
+import com.weha.online_book_management_system.dtos.author.AuthorResponseDTO;
+import com.weha.online_book_management_system.services.AuthorService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/authors")
+@Tag(name = "Author", description = "APIs for managing author")
+public class AuthorController {
+
+    private final AuthorService authorService;
+
+    public AuthorController(AuthorService authorService) {
+        this.authorService = authorService;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<DataState<List<AuthorResponseDTO>>> findAllAuthors() {
+        return ResponseEntity.ok(new DataState<>(authorService.findAllAuthors()));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<DataState<AuthorResponseDTO>> findAuthorById(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(new DataState<>(authorService.findAuthorById(id)));
+    }
+
+    @PostMapping("")
+    public ResponseEntity<DataState<AuthorResponseDTO>> createAuthor(@RequestBody AuthorRequestDTO req) {
+        return ResponseEntity.ok(new DataState<>(authorService.createAuthor(req)));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<DataState<AuthorResponseDTO>> updateAuthor(
+            @PathVariable Long id,
+            @RequestBody AuthorRequestDTO req) throws Exception {
+        return ResponseEntity.ok(new DataState<>(authorService.updateAuthor(id, req)));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<DataState<Boolean>> deleteAuthor(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(new DataState<>(authorService.deleteAuthor(id)));
+    }
+}
