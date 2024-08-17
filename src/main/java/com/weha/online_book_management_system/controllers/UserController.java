@@ -1,9 +1,7 @@
 package com.weha.online_book_management_system.controllers;
 
 import com.weha.online_book_management_system.dtos.DataState;
-import com.weha.online_book_management_system.dtos.user.ForgotPasswordRequestDTO;
-import com.weha.online_book_management_system.dtos.user.LoginRequestDTO;
-import com.weha.online_book_management_system.dtos.user.RegisterRequestDTO;
+import com.weha.online_book_management_system.dtos.user.*;
 import com.weha.online_book_management_system.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +19,18 @@ public class UserController {
     }
 
     @PostMapping("register-user")
-    public ResponseEntity<DataState<String>> registerUser(@RequestBody RegisterRequestDTO req) {
-        return ResponseEntity.ok(new DataState<>(""));
+    public ResponseEntity<DataState<String>> registerUser(@RequestBody RegisterRequestDTO req) throws Exception {
+        return ResponseEntity.ok(new DataState<>(userService.registerUser(req)));
     }
 
     @PostMapping("register-admin")
-    public ResponseEntity<DataState<String>> registerAdmin(@RequestBody RegisterRequestDTO req) {
-        return ResponseEntity.ok(new DataState<>(""));
+    public ResponseEntity<DataState<String>> registerAdmin(@RequestBody RegisterRequestDTO req) throws Exception {
+        return ResponseEntity.ok(new DataState<>(userService.registerAdmin(req)));
     }
 
     @PostMapping("login")
-    public ResponseEntity<DataState<String>> login(@RequestBody LoginRequestDTO req) {
-        return ResponseEntity.ok(new DataState<>(""));
+    public ResponseEntity<DataState<LoginResponseDTO>> login(@RequestBody LoginRequestDTO req) throws Exception {
+        return ResponseEntity.ok(new DataState<>(userService.login(req)));
     }
 
     @PostMapping("forgot-password")
@@ -41,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("refresh-token")
-    public ResponseEntity<DataState<String>> refreshToken() {
-        return ResponseEntity.ok(new DataState<>(""));
+    public ResponseEntity<DataState<RefreshTokenResponseDTO>> refreshToken() throws Exception {
+        return ResponseEntity.ok(new DataState<>(userService.refreshToken()));
     }
 }

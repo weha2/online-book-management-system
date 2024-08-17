@@ -20,4 +20,11 @@ public class RoleEntity extends BaseEntity {
 
     @ManyToMany(mappedBy = "roles")
     private List<UserEntity> users;
+
+    public RoleEntity() {
+    }
+
+    public RoleEntity(String roleName) {
+        this.roleName = roleName;
+    }
 }
