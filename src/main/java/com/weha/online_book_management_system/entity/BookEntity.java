@@ -47,6 +47,9 @@ public class BookEntity extends BaseEntity {
     @Column(nullable = false)
     private Long stockQuantity;
 
+    @Column()
+    private String picture;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "book_categories",
@@ -61,4 +64,12 @@ public class BookEntity extends BaseEntity {
             fetch = FetchType.EAGER
     )
     private List<ReviewEntity> reviews;
+
+    @OneToMany(
+            mappedBy = "book",
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    private List<OrderEntity> orders;
+
 }

@@ -1,6 +1,7 @@
 package com.weha.online_book_management_system.controllers;
 
 import com.weha.online_book_management_system.dtos.DataState;
+import com.weha.online_book_management_system.dtos.DataStatePage;
 import com.weha.online_book_management_system.dtos.book.BookRequestDTO;
 import com.weha.online_book_management_system.dtos.book.BookResponseDTO;
 import com.weha.online_book_management_system.services.BookService;
@@ -22,8 +23,12 @@ public class BookController {
     }
 
     @GetMapping()
-    public ResponseEntity<DataState<List<BookResponseDTO>>> findAllBooks() {
-        return ResponseEntity.ok(new DataState<>(bookService.findBooks()));
+    public ResponseEntity<DataStatePage<List<BookResponseDTO>>> findAllBooks(
+            @RequestParam(defaultValue = "") String title,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(bookService.findBooks(title, page - 1, size));
     }
 
     @GetMapping("{id}")

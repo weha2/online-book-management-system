@@ -1,6 +1,7 @@
 package com.weha.online_book_management_system.services;
 
 import ch.qos.logback.core.util.StringUtil;
+import com.weha.online_book_management_system.dtos.DataStatePage;
 import com.weha.online_book_management_system.dtos.book.BookRequestDTO;
 import com.weha.online_book_management_system.dtos.book.BookResponseDTO;
 import com.weha.online_book_management_system.entity.AuthorEntity;
@@ -9,6 +10,9 @@ import com.weha.online_book_management_system.entity.CategoryEntity;
 import com.weha.online_book_management_system.entity.PublisherEntity;
 import com.weha.online_book_management_system.repository.BookRepository;
 import org.antlr.v4.runtime.misc.Triple;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,12 +38,11 @@ public class BookService {
         this.categoryService = categoryService;
     }
 
-    public List<BookResponseDTO> findBooks() {
-        return bookRepository
-                .findAll()
-                .stream()
-                .map(BookResponseDTO::new)
-                .toList();
+    public DataStatePage<List<BookResponseDTO>> findBooks(String title, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BookEntity> result = bookRepository.findByTitleContaining(title, pageable);
+        List<BookResponseDTO> books = result.getContent().stream().map(BookResponseDTO::new).toList();
+        return new DataStatePage<>(books, result);
     }
 
     public BookResponseDTO findBookById(Long id) throws Exception {
