@@ -55,4 +55,10 @@ public class BookEntity extends BaseEntity {
     )
     private List<CategoryEntity> categories;
 
+    @OneToMany(
+            mappedBy = "book",
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    private List<ReviewEntity> reviews;
 }

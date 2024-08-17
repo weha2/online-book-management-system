@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class TokenUtil {
@@ -30,12 +31,13 @@ public class TokenUtil {
         return Algorithm.HMAC256(secret);
     }
 
-    public String createToken(String principle, String role) {
+    public String createToken(Long userId, String principle, String role) {
         Date now = new Date();
         Date expire = new Date(now.getTime() + (expiration * 1000));
         return JWT.create()
                 .withIssuer(issuer)
                 .withClaim("principle", principle)
+                .withClaim("userId", userId)
                 .withClaim("role", role)
                 .withExpiresAt(expire)
                 .sign(algorithm());
@@ -48,20 +50,30 @@ public class TokenUtil {
         return verifier.verify(token);
     }
 
-    public String getPrinciple() throws Exception {
+    private Authentication authentication() {
         SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        if (authentication.getPrincipal().equals("anonymousUser")) {
+        return context.getAuthentication();
+    }
+
+    public String getPrinciple() throws Exception {
+        if (authentication().getPrincipal().equals("anonymousUser")) {
             throw new Exception("Invalid token.");
         }
-        return authentication.getPrincipal().toString();
+        return authentication().getPrincipal().toString();
     }
 
     public String getRole() {
-        SecurityContext context = SecurityContextHolder.getContext();
         List<String> roles = new ArrayList<>();
-        context.getAuthentication().getAuthorities().forEach(s -> roles.add(s.getAuthority()));
+        authentication().getAuthorities().forEach(s -> roles.add(s.getAuthority()));
         return roles.getFirst();
+    }
+
+    public Long getUserId() throws Exception {
+        if (authentication().getDetails() == null) {
+            throw new Exception("Not found user id");
+        }
+        Map<String, Object> details = (Map<String, Object>) authentication().getDetails();
+        return Long.parseLong(details.get("userId").toString());
     }
 
 }

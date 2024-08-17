@@ -35,4 +35,11 @@ public class UserEntity extends BaseEntity {
     )
     private List<RoleEntity> roles;
 
+    @OneToMany(
+            mappedBy = "user",
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    private List<ReviewEntity> reviews;
+
 }

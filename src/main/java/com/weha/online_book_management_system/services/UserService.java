@@ -83,7 +83,7 @@ public class UserService {
             throw new Exception("Invalid username or password!");
         }
 
-        String token = tokenUtil.createToken(user.getUsername(), user.getRoles().getFirst().getRoleName());
+        String token = tokenUtil.createToken(user.getId(), user.getUsername(), user.getRoles().getFirst().getRoleName());
         DecodedJWT decodedJWT = tokenUtil.decodedJWT(token);
         return new LoginResponseDTO(user, token, decodedJWT.getExpiresAt());
     }
@@ -91,7 +91,8 @@ public class UserService {
     public RefreshTokenResponseDTO refreshToken() throws Exception {
         String principle = tokenUtil.getPrinciple();
         String role = tokenUtil.getRole();
-        String token = tokenUtil.createToken(principle, role);
+        Long userId = tokenUtil.getUserId();
+        String token = tokenUtil.createToken(userId, principle, role);
         Date expiration = tokenUtil.decodedJWT(token).getExpiresAt();
         return new RefreshTokenResponseDTO(token, expiration);
     }

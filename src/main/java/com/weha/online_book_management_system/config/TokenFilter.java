@@ -16,7 +16,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class TokenFilter extends OncePerRequestFilter {
@@ -41,15 +43,23 @@ public class TokenFilter extends OncePerRequestFilter {
             DecodedJWT decodedJWT = tokenUtil.decodedJWT(token);
 
             if (decodedJWT != null) {
+
                 String principle = decodedJWT.getClaim("principle").asString();
                 String role = decodedJWT.getClaim("role").asString();
+                Long userId = decodedJWT.getClaim("userId").asLong();
+
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
                 grantedAuthorities.add(new SimpleGrantedAuthority(role));
+
+                Map<String, Object> details = new HashMap<>();
+                details.put("userId", userId);
+
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         principle,
                         "(protection)",
                         grantedAuthorities);
 
+                authenticationToken.setDetails(details);
                 SecurityContext context = SecurityContextHolder.getContext();
                 context.setAuthentication(authenticationToken);
             }
