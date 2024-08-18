@@ -3,8 +3,8 @@ package com.weha.online_book_management_system.services;
 import com.weha.online_book_management_system.base.BaseService;
 import com.weha.online_book_management_system.constans.OrderStatus;
 import com.weha.online_book_management_system.dtos.book.ResponseBookDTO;
-import com.weha.online_book_management_system.dtos.order.ResponseOrderByUserDTO;
 import com.weha.online_book_management_system.dtos.order.CreateOrderDTO;
+import com.weha.online_book_management_system.dtos.order.ResponseOrderDTO;
 import com.weha.online_book_management_system.dtos.order.ResponseOrderSuccessDTO;
 import com.weha.online_book_management_system.entity.BookEntity;
 import com.weha.online_book_management_system.entity.OrderEntity;
@@ -31,6 +31,14 @@ public class OrderService extends BaseService {
         super(tokenUtil);
         this.orderRepository = orderRepository;
         this.bookService = bookService;
+    }
+
+    public List<ResponseOrderDTO> findAllOrders() {
+        return orderRepository
+                .findAll()
+                .stream()
+                .map(ResponseOrderDTO::new)
+                .toList();
     }
 
     public ResponseOrderSuccessDTO order(CreateOrderDTO req) throws Exception {
@@ -60,17 +68,31 @@ public class OrderService extends BaseService {
         );
     }
 
-    public List<ResponseOrderByUserDTO> findByUser() throws Exception {
+    public List<ResponseOrderDTO> findByUser() throws Exception {
         UserEntity user = new UserEntity();
         user.setId(userId());
         Optional<List<OrderEntity>> orders = orderRepository.findByUser(user);
         return orders
                 .map(orderEntities -> orderEntities
                         .stream()
-                        .map(ResponseOrderByUserDTO::new)
+                        .map(ResponseOrderDTO::new)
                         .toList()
                 )
                 .orElseGet(ArrayList::new);
+    }
+
+    public boolean updateOrderStatus(Long id, OrderStatus status) throws Exception {
+        Optional<OrderEntity> order = orderRepository.findById(id);
+        if (order.isEmpty()) {
+            throw new Exception("Not found order width id ".concat(String.valueOf(id)));
+        }
+        OrderEntity entity = order.get();
+        if (entity.getStatus().equals(OrderStatus.CANCEL.name())) {
+            throw new Exception("Can not update order status");
+        }
+        entity.setStatus(status.name());
+        orderRepository.save(entity);
+        return true;
     }
 
     private void validateOrderRequest(CreateOrderDTO req) throws Exception {
