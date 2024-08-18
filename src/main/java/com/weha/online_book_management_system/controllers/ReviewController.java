@@ -1,8 +1,8 @@
 package com.weha.online_book_management_system.controllers;
 
 import com.weha.online_book_management_system.dtos.DataState;
-import com.weha.online_book_management_system.dtos.Review.ReviewRequestDTO;
-import com.weha.online_book_management_system.dtos.Review.ReviewResponseDTO;
+import com.weha.online_book_management_system.dtos.Review.CreateReviewDTO;
+import com.weha.online_book_management_system.dtos.Review.ResponseReviewDTO;
 import com.weha.online_book_management_system.services.ReviewService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +22,19 @@ public class ReviewController {
     }
 
     @GetMapping("{bookId}")
-    public ResponseEntity<DataState<List<ReviewResponseDTO>>> findReviewByBook(@PathVariable Long bookId) {
+    public ResponseEntity<DataState<List<ResponseReviewDTO>>> findReviewByBook(@PathVariable Long bookId) {
         return ResponseEntity.ok(new DataState<>(reviewService.findByBook(bookId)));
     }
 
     @PostMapping("")
-    public ResponseEntity<DataState<ReviewResponseDTO>> createReview(@RequestBody ReviewRequestDTO req) throws Exception {
+    public ResponseEntity<DataState<ResponseReviewDTO>> createReview(@RequestBody CreateReviewDTO req) throws Exception {
         return ResponseEntity.ok(new DataState<>(reviewService.createReview(req)));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<DataState<ReviewResponseDTO>> updateReview(
+    public ResponseEntity<DataState<ResponseReviewDTO>> updateReview(
             @PathVariable Long id,
-            @RequestBody ReviewRequestDTO req
+            @RequestBody CreateReviewDTO req
     ) throws Exception {
         return ResponseEntity.ok(new DataState<>(reviewService.updateReview(id, req)));
     }

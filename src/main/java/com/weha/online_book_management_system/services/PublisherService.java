@@ -1,7 +1,7 @@
 package com.weha.online_book_management_system.services;
 
-import com.weha.online_book_management_system.dtos.publisher.PublisherRequestDTO;
-import com.weha.online_book_management_system.dtos.publisher.PublisherResponseDTO;
+import com.weha.online_book_management_system.dtos.publisher.CreatePublisherDTO;
+import com.weha.online_book_management_system.dtos.publisher.ResponsePublisherDTO;
 import com.weha.online_book_management_system.entity.PublisherEntity;
 import com.weha.online_book_management_system.repository.PublisherRepository;
 import org.springframework.stereotype.Service;
@@ -19,20 +19,20 @@ public class PublisherService {
         this.publisherRepository = publisherRepository;
     }
 
-    public List<PublisherResponseDTO> findAllPublishers() {
+    public List<ResponsePublisherDTO> findAllPublishers() {
         return publisherRepository
                 .findAll()
                 .stream()
-                .map(PublisherResponseDTO::new)
+                .map(ResponsePublisherDTO::new)
                 .toList();
     }
 
-    public PublisherResponseDTO findPublisherById(Long id) throws Exception {
+    public ResponsePublisherDTO findPublisherById(Long id) throws Exception {
         Optional<PublisherEntity> result = publisherRepository.findById(id);
         if (result.isEmpty()) {
             throw new Exception("Not found publisher with id ".concat(String.valueOf(id)));
         }
-        return new PublisherResponseDTO(result.get());
+        return new ResponsePublisherDTO(result.get());
     }
 
     public List<PublisherEntity> findPublisherByAllId(List<Long> idx) throws Exception {
@@ -43,14 +43,14 @@ public class PublisherService {
         return publishers;
     }
 
-    public PublisherResponseDTO createPublisher(PublisherRequestDTO req) {
+    public ResponsePublisherDTO createPublisher(CreatePublisherDTO req) {
         PublisherEntity publisher = new PublisherEntity();
         publisher.setPublisherName(req.publisherName());
         PublisherEntity result = publisherRepository.save(publisher);
-        return new PublisherResponseDTO(result);
+        return new ResponsePublisherDTO(result);
     }
 
-    public PublisherResponseDTO updatePublisher(Long id, PublisherRequestDTO res) throws Exception {
+    public ResponsePublisherDTO updatePublisher(Long id, CreatePublisherDTO res) throws Exception {
         Optional<PublisherEntity> publisher = publisherRepository.findById(id);
         if (publisher.isEmpty()) {
             throw new Exception("Not found publisher with id ".concat(String.valueOf(id)));
@@ -59,7 +59,7 @@ public class PublisherService {
         data.setPublisherName(res.publisherName());
         data.setModifierDate(LocalDateTime.now());
         PublisherEntity result = publisherRepository.save(data);
-        return new PublisherResponseDTO(result);
+        return new ResponsePublisherDTO(result);
     }
 
     public boolean deletePublisher(Long id) throws Exception {

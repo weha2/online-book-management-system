@@ -4,13 +4,13 @@ import com.weha.online_book_management_system.entity.AuthorEntity;
 
 import java.time.LocalDateTime;
 
-public record AuthorResponseDTO(
+public record ResponseAuthorDTO(
         Long id,
         String authorName,
         LocalDateTime createdDate,
         LocalDateTime modifierDate
 ) {
-    public AuthorResponseDTO(AuthorEntity entity) {
+    public ResponseAuthorDTO(AuthorEntity entity) {
         this(
                 entity.getId(),
                 entity.getAuthorName(),

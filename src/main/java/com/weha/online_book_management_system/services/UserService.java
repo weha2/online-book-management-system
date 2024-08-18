@@ -2,10 +2,10 @@ package com.weha.online_book_management_system.services;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.weha.online_book_management_system.constans.RoleName;
-import com.weha.online_book_management_system.dtos.user.LoginRequestDTO;
-import com.weha.online_book_management_system.dtos.user.LoginResponseDTO;
-import com.weha.online_book_management_system.dtos.user.RefreshTokenResponseDTO;
-import com.weha.online_book_management_system.dtos.user.RegisterRequestDTO;
+import com.weha.online_book_management_system.dtos.user.LoginDTO;
+import com.weha.online_book_management_system.dtos.user.ResponseLoginDTO;
+import com.weha.online_book_management_system.dtos.user.ResponseRefreshTokenDTO;
+import com.weha.online_book_management_system.dtos.user.ResponseRegisterDTO;
 import com.weha.online_book_management_system.entity.RoleEntity;
 import com.weha.online_book_management_system.entity.UserEntity;
 import com.weha.online_book_management_system.repository.UserRepository;
@@ -36,15 +36,15 @@ public class UserService {
         this.tokenUtil = tokenUtil;
     }
 
-    public String registerUser(RegisterRequestDTO req) throws Exception {
+    public String registerUser(ResponseRegisterDTO req) throws Exception {
         return register(req, RoleName.USER);
     }
 
-    public String registerAdmin(RegisterRequestDTO req) throws Exception {
+    public String registerAdmin(ResponseRegisterDTO req) throws Exception {
         return register(req, RoleName.ADMIN);
     }
 
-    private String register(RegisterRequestDTO req, RoleName roleName) throws Exception {
+    private String register(ResponseRegisterDTO req, RoleName roleName) throws Exception {
         validateRegisterRequest(req);
         UserEntity user = new UserEntity();
         List<RoleEntity> roles = new ArrayList<>();
@@ -65,7 +65,7 @@ public class UserService {
         return "Register successfully";
     }
 
-    public LoginResponseDTO login(LoginRequestDTO req) throws Exception {
+    public ResponseLoginDTO login(LoginDTO req) throws Exception {
         if (Objects.isNull(req.username()) || Objects.isNull(req.password())) {
             throw new Exception("Invalid username or password!");
         }
@@ -85,19 +85,19 @@ public class UserService {
 
         String token = tokenUtil.createToken(user.getId(), user.getUsername(), user.getRoles().getFirst().getRoleName());
         DecodedJWT decodedJWT = tokenUtil.decodedJWT(token);
-        return new LoginResponseDTO(user, token, decodedJWT.getExpiresAt());
+        return new ResponseLoginDTO(user, token, decodedJWT.getExpiresAt());
     }
 
-    public RefreshTokenResponseDTO refreshToken() throws Exception {
+    public ResponseRefreshTokenDTO refreshToken() throws Exception {
         String principle = tokenUtil.getPrinciple();
         String role = tokenUtil.getRole();
         Long userId = tokenUtil.getUserId();
         String token = tokenUtil.createToken(userId, principle, role);
         Date expiration = tokenUtil.decodedJWT(token).getExpiresAt();
-        return new RefreshTokenResponseDTO(token, expiration);
+        return new ResponseRefreshTokenDTO(token, expiration);
     }
 
-    private void validateRegisterRequest(RegisterRequestDTO req) throws Exception {
+    private void validateRegisterRequest(ResponseRegisterDTO req) throws Exception {
         if (Objects.isNull(req.username())) {
             throw new Exception("Required username");
         }

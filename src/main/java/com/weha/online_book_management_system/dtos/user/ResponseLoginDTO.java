@@ -4,7 +4,7 @@ import com.weha.online_book_management_system.entity.UserEntity;
 
 import java.util.Date;
 
-public record LoginResponseDTO(
+public record ResponseLoginDTO(
         String username,
         String email,
         String firstName,
@@ -12,7 +12,7 @@ public record LoginResponseDTO(
         String token,
         Date expiration
 ) {
-    public LoginResponseDTO(UserEntity entity, String token, Date expiration) {
+    public ResponseLoginDTO(UserEntity entity, String token, Date expiration) {
         this(
                 entity.getUsername(),
                 entity.getEmail(),

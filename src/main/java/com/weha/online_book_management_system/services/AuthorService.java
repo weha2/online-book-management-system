@@ -1,7 +1,7 @@
 package com.weha.online_book_management_system.services;
 
-import com.weha.online_book_management_system.dtos.author.AuthorRequestDTO;
-import com.weha.online_book_management_system.dtos.author.AuthorResponseDTO;
+import com.weha.online_book_management_system.dtos.author.CreateAuthorDTO;
+import com.weha.online_book_management_system.dtos.author.ResponseAuthorDTO;
 import com.weha.online_book_management_system.entity.AuthorEntity;
 import com.weha.online_book_management_system.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
@@ -19,30 +19,30 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public List<AuthorResponseDTO> findAllAuthors() {
+    public List<ResponseAuthorDTO> findAllAuthors() {
         return authorRepository
                 .findAll()
                 .stream()
-                .map(AuthorResponseDTO::new)
+                .map(ResponseAuthorDTO::new)
                 .toList();
     }
 
-    public AuthorResponseDTO findAuthorById(Long id) throws Exception {
+    public ResponseAuthorDTO findAuthorById(Long id) throws Exception {
         Optional<AuthorEntity> result = authorRepository.findById(id);
         if (result.isEmpty()) {
             throw new Exception("Not found author with id ".concat(String.valueOf(id)));
         }
-        return new AuthorResponseDTO(result.get());
+        return new ResponseAuthorDTO(result.get());
     }
 
-    public AuthorResponseDTO createAuthor(AuthorRequestDTO req) {
+    public ResponseAuthorDTO createAuthor(CreateAuthorDTO req) {
         AuthorEntity author = new AuthorEntity();
         author.setAuthorName(req.authorName());
         AuthorEntity result = authorRepository.save(author);
-        return new AuthorResponseDTO(result);
+        return new ResponseAuthorDTO(result);
     }
 
-    public AuthorResponseDTO updateAuthor(Long id, AuthorRequestDTO res) throws Exception {
+    public ResponseAuthorDTO updateAuthor(Long id, CreateAuthorDTO res) throws Exception {
         Optional<AuthorEntity> author = authorRepository.findById(id);
         if (author.isEmpty()) {
             throw new Exception("Not found author with id ".concat(String.valueOf(id)));
@@ -51,7 +51,7 @@ public class AuthorService {
         data.setAuthorName(res.authorName());
         data.setModifierDate(LocalDateTime.now());
         AuthorEntity result = authorRepository.save(data);
-        return new AuthorResponseDTO(result);
+        return new ResponseAuthorDTO(result);
     }
 
     public boolean deleteAuthor(Long id) throws Exception {

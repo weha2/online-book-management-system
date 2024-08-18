@@ -1,7 +1,7 @@
 package com.weha.online_book_management_system.services;
 
-import com.weha.online_book_management_system.dtos.category.CategoryRequestDTO;
-import com.weha.online_book_management_system.dtos.category.CategoryResponseDTO;
+import com.weha.online_book_management_system.dtos.category.CreateCategoryDTO;
+import com.weha.online_book_management_system.dtos.category.ResponseCategoryDTO;
 import com.weha.online_book_management_system.entity.CategoryEntity;
 import com.weha.online_book_management_system.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -19,20 +19,20 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryResponseDTO> findAllCategory() {
+    public List<ResponseCategoryDTO> findAllCategory() {
         return categoryRepository
                 .findAll()
                 .stream()
-                .map(CategoryResponseDTO::new)
+                .map(ResponseCategoryDTO::new)
                 .toList();
     }
 
-    public CategoryResponseDTO findCategoryById(Long id) throws Exception {
+    public ResponseCategoryDTO findCategoryById(Long id) throws Exception {
         Optional<CategoryEntity> result = categoryRepository.findById(id);
         if (result.isEmpty()) {
             throw new Exception("Not found category with id ".concat(String.valueOf(id)));
         }
-        return new CategoryResponseDTO(result.get());
+        return new ResponseCategoryDTO(result.get());
     }
 
     public List<CategoryEntity> findCategoryByAllId(List<Long> idx) throws Exception {
@@ -43,14 +43,14 @@ public class CategoryService {
         return categories;
     }
 
-    public CategoryResponseDTO createCategory(CategoryRequestDTO req) {
+    public ResponseCategoryDTO createCategory(CreateCategoryDTO req) {
         CategoryEntity category = new CategoryEntity();
         category.setCategoryName(req.categoryName());
         CategoryEntity result = categoryRepository.save(category);
-        return new CategoryResponseDTO(result);
+        return new ResponseCategoryDTO(result);
     }
 
-    public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO req) throws Exception {
+    public ResponseCategoryDTO updateCategory(Long id, CreateCategoryDTO req) throws Exception {
         Optional<CategoryEntity> category = categoryRepository.findById(id);
         if (category.isEmpty()) {
             throw new Exception("Not found category with id ".concat(String.valueOf(id)));
@@ -59,7 +59,7 @@ public class CategoryService {
         data.setCategoryName(req.categoryName());
         data.setModifierDate(LocalDateTime.now());
         CategoryEntity result = categoryRepository.save(data);
-        return new CategoryResponseDTO(result);
+        return new ResponseCategoryDTO(result);
     }
 
     public boolean deleteCategory(Long id) throws Exception {

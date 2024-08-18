@@ -1,15 +1,15 @@
 package com.weha.online_book_management_system.services;
 
 import ch.qos.logback.core.util.StringUtil;
-import com.weha.online_book_management_system.dtos.DataStatePage;
-import com.weha.online_book_management_system.dtos.book.BookRequestDTO;
-import com.weha.online_book_management_system.dtos.book.BookResponseDTO;
+import com.weha.online_book_management_system.dtos.book.CreateBookDTO;
+import com.weha.online_book_management_system.dtos.book.ResponseBookDTO;
 import com.weha.online_book_management_system.entity.AuthorEntity;
 import com.weha.online_book_management_system.entity.BookEntity;
 import com.weha.online_book_management_system.entity.CategoryEntity;
 import com.weha.online_book_management_system.entity.PublisherEntity;
 import com.weha.online_book_management_system.repository.BookRepository;
-import org.antlr.v4.runtime.misc.Triple;
+import com.weha.online_book_management_system.utils.Triple;
+import com.weha.online_book_management_system.utils.Tuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,40 +38,40 @@ public class BookService {
         this.categoryService = categoryService;
     }
 
-    public DataStatePage<List<BookResponseDTO>> findBooks(String title, int page, int size) {
+    public Tuple<Page<BookEntity>, List<ResponseBookDTO>> findBooks(String title, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<BookEntity> result = bookRepository.findByTitleContaining(title, pageable);
-        List<BookResponseDTO> books = result.getContent().stream().map(BookResponseDTO::new).toList();
-        return new DataStatePage<>(books, result);
+        List<ResponseBookDTO> books = result.getContent().stream().map(ResponseBookDTO::new).toList();
+        return new Tuple<>(result, books);
     }
 
-    public BookResponseDTO findBookById(Long id) throws Exception {
+    public ResponseBookDTO findBookById(Long id) throws Exception {
         Optional<BookEntity> book = bookRepository.findById(id);
         if (book.isEmpty()) {
             throw new Exception("Not found book with id ".concat(String.valueOf(id)));
         }
-        return new BookResponseDTO(book.get());
+        return new ResponseBookDTO(book.get());
     }
 
-    public BookResponseDTO createBook(BookRequestDTO req) throws Exception {
+    public ResponseBookDTO createBook(CreateBookDTO req) throws Exception {
         validateRequest(req);
         Triple<List<AuthorEntity>, List<PublisherEntity>, List<CategoryEntity>> apc = getAuthorPublisherCategories(req);
         BookEntity book = new BookEntity();
         book.setTitle(req.title());
-        book.setAuthors(apc.a);
+        book.setAuthors(apc.first());
         book.setIsbn(req.isbn());
         book.setPublicationDate(req.publicationDate());
-        book.setPublishers(apc.b);
+        book.setPublishers(apc.second());
         book.setDescription(req.description());
         book.setPrice(req.price());
         book.setStockQuantity(req.stockQuantity());
-        book.setCategories(apc.c);
+        book.setCategories(apc.third());
         book.setModifierDate(LocalDateTime.now());
         BookEntity result = bookRepository.save(book);
-        return new BookResponseDTO(result);
+        return new ResponseBookDTO(result);
     }
 
-    public BookResponseDTO updateBook(Long id, BookRequestDTO req) throws Exception {
+    public ResponseBookDTO updateBook(Long id, CreateBookDTO req) throws Exception {
         Optional<BookEntity> data = bookRepository.findById(id);
         if (data.isEmpty()) {
             throw new Exception("Not found book with id ".concat(String.valueOf(id)));
@@ -80,16 +80,16 @@ public class BookService {
         Triple<List<AuthorEntity>, List<PublisherEntity>, List<CategoryEntity>> apc = getAuthorPublisherCategories(req);
         BookEntity book = data.get();
         book.setTitle(req.title());
-        book.setAuthors(apc.a);
+        book.setAuthors(apc.first());
         book.setIsbn(req.isbn());
         book.setPublicationDate(req.publicationDate());
-        book.setPublishers(apc.b);
+        book.setPublishers(apc.second());
         book.setDescription(req.description());
         book.setPrice(req.price());
         book.setStockQuantity(req.stockQuantity());
-        book.setCategories(apc.c);
+        book.setCategories(apc.third());
         BookEntity result = bookRepository.save(book);
-        return new BookResponseDTO(result);
+        return new ResponseBookDTO(result);
     }
 
     public boolean deleteBook(Long id) throws Exception {
@@ -101,14 +101,14 @@ public class BookService {
     }
 
     private Triple<List<AuthorEntity>, List<PublisherEntity>, List<CategoryEntity>> getAuthorPublisherCategories(
-            BookRequestDTO req) throws Exception {
+            CreateBookDTO req) throws Exception {
         List<AuthorEntity> authors = authorService.findAuthorsAllId(req.authors());
         List<PublisherEntity> publishers = publisherService.findPublisherByAllId(req.publishers());
         List<CategoryEntity> categories = categoryService.findCategoryByAllId(req.categories());
         return new Triple<>(authors, publishers, categories);
     }
 
-    private void validateRequest(BookRequestDTO req) throws Exception {
+    private void validateRequest(CreateBookDTO req) throws Exception {
         if (StringUtil.isNullOrEmpty(req.title())) {
             throw new Exception("Required title.");
         }

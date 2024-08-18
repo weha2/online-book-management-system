@@ -1,6 +1,6 @@
 package com.weha.online_book_management_system.dtos.user;
 
-public record LoginRequestDTO(
+public record LoginDTO(
         String username,
         String password
 ) {

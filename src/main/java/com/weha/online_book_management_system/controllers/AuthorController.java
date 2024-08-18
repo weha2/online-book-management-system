@@ -1,8 +1,8 @@
 package com.weha.online_book_management_system.controllers;
 
 import com.weha.online_book_management_system.dtos.DataState;
-import com.weha.online_book_management_system.dtos.author.AuthorRequestDTO;
-import com.weha.online_book_management_system.dtos.author.AuthorResponseDTO;
+import com.weha.online_book_management_system.dtos.author.CreateAuthorDTO;
+import com.weha.online_book_management_system.dtos.author.ResponseAuthorDTO;
 import com.weha.online_book_management_system.services.AuthorService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -22,24 +22,24 @@ public class AuthorController {
     }
 
     @GetMapping("")
-    public ResponseEntity<DataState<List<AuthorResponseDTO>>> findAllAuthors() {
+    public ResponseEntity<DataState<List<ResponseAuthorDTO>>> findAllAuthors() {
         return ResponseEntity.ok(new DataState<>(authorService.findAllAuthors()));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<DataState<AuthorResponseDTO>> findAuthorById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<DataState<ResponseAuthorDTO>> findAuthorById(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok(new DataState<>(authorService.findAuthorById(id)));
     }
 
     @PostMapping("")
-    public ResponseEntity<DataState<AuthorResponseDTO>> createAuthor(@RequestBody AuthorRequestDTO req) {
+    public ResponseEntity<DataState<ResponseAuthorDTO>> createAuthor(@RequestBody CreateAuthorDTO req) {
         return ResponseEntity.ok(new DataState<>(authorService.createAuthor(req)));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<DataState<AuthorResponseDTO>> updateAuthor(
+    public ResponseEntity<DataState<ResponseAuthorDTO>> updateAuthor(
             @PathVariable Long id,
-            @RequestBody AuthorRequestDTO req) throws Exception {
+            @RequestBody CreateAuthorDTO req) throws Exception {
         return ResponseEntity.ok(new DataState<>(authorService.updateAuthor(id, req)));
     }
 

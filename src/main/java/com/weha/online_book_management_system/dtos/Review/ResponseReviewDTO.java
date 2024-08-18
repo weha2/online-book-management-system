@@ -4,22 +4,22 @@ import com.weha.online_book_management_system.entity.ReviewEntity;
 
 import java.time.LocalDateTime;
 
-public record ReviewResponseDTO(
+public record ResponseReviewDTO(
         Long id,
         Long bookId,
         Integer rating,
         String comment,
-        ReviewByUser user,
+        UserReviewDTO user,
         LocalDateTime createdDate,
         LocalDateTime modifierDate
 ) {
-    public ReviewResponseDTO(ReviewEntity entity) {
+    public ResponseReviewDTO(ReviewEntity entity) {
         this(
                 entity.getId(),
                 entity.getBook().getId(),
                 entity.getRating(),
                 entity.getComment(),
-                new ReviewByUser(
+                new UserReviewDTO(
                         entity.getUser().getId(),
                         entity.getUser().getFistName(),
                         entity.getUser().getLastName()
@@ -30,7 +30,7 @@ public record ReviewResponseDTO(
     }
 }
 
-record ReviewByUser(
+record UserReviewDTO(
         Long userId,
         String fistName,
         String lastName

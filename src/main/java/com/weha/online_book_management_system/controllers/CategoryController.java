@@ -1,8 +1,8 @@
 package com.weha.online_book_management_system.controllers;
 
 import com.weha.online_book_management_system.dtos.DataState;
-import com.weha.online_book_management_system.dtos.category.CategoryRequestDTO;
-import com.weha.online_book_management_system.dtos.category.CategoryResponseDTO;
+import com.weha.online_book_management_system.dtos.category.CreateCategoryDTO;
+import com.weha.online_book_management_system.dtos.category.ResponseCategoryDTO;
 import com.weha.online_book_management_system.services.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -22,24 +22,24 @@ public class CategoryController {
     }
 
     @GetMapping("")
-    public ResponseEntity<DataState<List<CategoryResponseDTO>>> findAllCategories() {
+    public ResponseEntity<DataState<List<ResponseCategoryDTO>>> findAllCategories() {
         return ResponseEntity.ok(new DataState<>(categoryService.findAllCategory()));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<DataState<CategoryResponseDTO>> findCategoryById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<DataState<ResponseCategoryDTO>> findCategoryById(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok(new DataState<>(categoryService.findCategoryById(id)));
     }
 
     @PostMapping("")
-    public ResponseEntity<DataState<CategoryResponseDTO>> createCategory(@RequestBody CategoryRequestDTO req) {
+    public ResponseEntity<DataState<ResponseCategoryDTO>> createCategory(@RequestBody CreateCategoryDTO req) {
         return ResponseEntity.ok(new DataState<>(categoryService.createCategory(req)));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<DataState<CategoryResponseDTO>> updateCategory(
+    public ResponseEntity<DataState<ResponseCategoryDTO>> updateCategory(
             @PathVariable Long id,
-            @RequestBody CategoryRequestDTO req) throws Exception {
+            @RequestBody CreateCategoryDTO req) throws Exception {
         return ResponseEntity.ok(new DataState<>(categoryService.updateCategory(id, req)));
     }
 

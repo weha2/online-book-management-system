@@ -1,39 +1,39 @@
 package com.weha.online_book_management_system.dtos.book;
 
-import com.weha.online_book_management_system.dtos.author.AuthorResponseDTO;
-import com.weha.online_book_management_system.dtos.category.CategoryResponseDTO;
-import com.weha.online_book_management_system.dtos.publisher.PublisherResponseDTO;
+import com.weha.online_book_management_system.dtos.author.ResponseAuthorDTO;
+import com.weha.online_book_management_system.dtos.category.ResponseCategoryDTO;
+import com.weha.online_book_management_system.dtos.publisher.ResponsePublisherDTO;
 import com.weha.online_book_management_system.entity.BookEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record BookResponseDTO(
+public record ResponseBookDTO(
         Long id,
         String title,
-        List<AuthorResponseDTO> authors,
+        List<ResponseAuthorDTO> authors,
         String isbn,
         LocalDateTime publicationDate,
-        List<PublisherResponseDTO> publishers,
+        List<ResponsePublisherDTO> publishers,
         String description,
         Double price,
         Long stockQuantity,
-        List<CategoryResponseDTO> categories
+        List<ResponseCategoryDTO> categories
 ) {
-    public BookResponseDTO(BookEntity entity) {
+    public ResponseBookDTO(BookEntity entity) {
         this(
                 entity.getId(),
                 entity.getTitle(),
                 entity
                         .getAuthors()
-                        .stream().map(AuthorResponseDTO::new)
+                        .stream().map(ResponseAuthorDTO::new)
                         .toList(),
                 entity.getIsbn(),
                 entity.getPublicationDate(),
                 entity
                         .getPublishers()
                         .stream()
-                        .map(PublisherResponseDTO::new)
+                        .map(ResponsePublisherDTO::new)
                         .toList(),
                 entity.getDescription(),
                 entity.getPrice(),
@@ -41,7 +41,7 @@ public record BookResponseDTO(
                 entity
                         .getCategories()
                         .stream()
-                        .map(CategoryResponseDTO::new)
+                        .map(ResponseCategoryDTO::new)
                         .toList()
         );
     }

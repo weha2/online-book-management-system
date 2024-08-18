@@ -2,7 +2,7 @@ package com.weha.online_book_management_system.dtos.user;
 
 import java.util.Date;
 
-public record RefreshTokenResponseDTO(
+public record ResponseRefreshTokenDTO(
         String token,
         Date expiration
 ) {

@@ -19,27 +19,27 @@ public class UserController {
     }
 
     @PostMapping("register-user")
-    public ResponseEntity<DataState<String>> registerUser(@RequestBody RegisterRequestDTO req) throws Exception {
+    public ResponseEntity<DataState<String>> registerUser(@RequestBody ResponseRegisterDTO req) throws Exception {
         return ResponseEntity.ok(new DataState<>(userService.registerUser(req)));
     }
 
     @PostMapping("register-admin")
-    public ResponseEntity<DataState<String>> registerAdmin(@RequestBody RegisterRequestDTO req) throws Exception {
+    public ResponseEntity<DataState<String>> registerAdmin(@RequestBody ResponseRegisterDTO req) throws Exception {
         return ResponseEntity.ok(new DataState<>(userService.registerAdmin(req)));
     }
 
     @PostMapping("login")
-    public ResponseEntity<DataState<LoginResponseDTO>> login(@RequestBody LoginRequestDTO req) throws Exception {
+    public ResponseEntity<DataState<ResponseLoginDTO>> login(@RequestBody LoginDTO req) throws Exception {
         return ResponseEntity.ok(new DataState<>(userService.login(req)));
     }
 
     @PostMapping("forgot-password")
-    public ResponseEntity<DataState<String>> forgotPassword(@RequestBody ForgotPasswordRequestDTO req) {
+    public ResponseEntity<DataState<String>> forgotPassword(@RequestBody ForgotPasswordDTO req) {
         return ResponseEntity.ok(new DataState<>(""));
     }
 
     @GetMapping("refresh-token")
-    public ResponseEntity<DataState<RefreshTokenResponseDTO>> refreshToken() throws Exception {
+    public ResponseEntity<DataState<ResponseRefreshTokenDTO>> refreshToken() throws Exception {
         return ResponseEntity.ok(new DataState<>(userService.refreshToken()));
     }
 }
