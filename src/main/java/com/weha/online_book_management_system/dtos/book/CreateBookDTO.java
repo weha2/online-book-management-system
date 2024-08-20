@@ -10,6 +10,7 @@ public record CreateBookDTO(
         String description,
         double price,
         long stockQuantity,
+        String pictureBase64,
         List<Long> authors,
         List<Long> publishers,
         List<Long> categories

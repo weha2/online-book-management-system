@@ -31,7 +31,7 @@ public class BookController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Tuple<Page<BookEntity>, List<ResponseBookDTO>> result = bookService.findBooks(title, page -1, size);
+        Tuple<Page<BookEntity>, List<ResponseBookDTO>> result = bookService.findBooks(title, page - 1, size);
         return ResponseEntity.ok(new DataStatePage<>(result.second(), result.fist()));
     }
 
@@ -41,7 +41,9 @@ public class BookController {
     }
 
     @PostMapping("")
-    public ResponseEntity<DataState<ResponseBookDTO>> createBook(@RequestBody CreateBookDTO req) throws Exception {
+    public ResponseEntity<DataState<ResponseBookDTO>> createBook(
+            @RequestBody CreateBookDTO req
+    ) throws Exception {
         return ResponseEntity.ok(new DataState<>(bookService.createBook(req)));
     }
 

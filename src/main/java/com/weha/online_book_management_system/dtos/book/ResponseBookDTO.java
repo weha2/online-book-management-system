@@ -18,6 +18,7 @@ public record ResponseBookDTO(
         String description,
         Double price,
         Long stockQuantity,
+        String picture,
         List<ResponseCategoryDTO> categories
 ) {
     public ResponseBookDTO(BookEntity entity) {
@@ -38,6 +39,7 @@ public record ResponseBookDTO(
                 entity.getDescription(),
                 entity.getPrice(),
                 entity.getStockQuantity(),
+                entity.getPicture(),
                 entity
                         .getCategories()
                         .stream()
